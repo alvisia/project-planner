@@ -6,10 +6,10 @@ html {
 }
 
 :root {
-  --column-1: #a2622d;
-  --column-2: #1b6161;
-  --column-3: #248224;
-  --column-4: #a22d22;
+  --column-1: #b7793f;
+  --column-2: #247c7c;
+  --column-3: #3b82f6;
+  --column-4: #248224;
 }
 
 body {
@@ -24,13 +24,26 @@ body {
 }
 
 h1 {
+  margin: 0;
   letter-spacing: 2px;
   text-shadow: 2px 2px 5px black;
 }
 
 .main-title {
   text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
   font-size: 3rem;
+}
+
+.subtitle {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 1.5rem;
+  color: white;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 0 8px rgba(0, 0, 0, 0.45);
 }
 
 ul {
@@ -51,11 +64,26 @@ ul {
 /* Columns */
 .drag-column {
   flex: 1; /* Divides all columns evenly */
-  margin: 0 10px;
+  margin: 0 1.2rem;
+  padding: 0 0.5rem;
   position: relative;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.55);
   border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
   overflow-x: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  border-radius: 15px;
+  margin: 10px;
+  padding: 0.7rem 1.5rem;
+}
+
+.header h1 {
+  font-size: 1.35rem;
+  letter-spacing: 1px;
 }
 
 .backlog-column .header,
@@ -109,17 +137,6 @@ ul {
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-.header {
-  display: flex;
-  justify-content: center;
-  border-radius: 10px;
-  margin: 10px;
-}
-
-.header h1 {
-  font-size: 1.25rem;
-}
-
 /* Drag and Drop */
 .over {
   padding: 50px 10px;
@@ -138,12 +155,21 @@ ul {
   line-height: 1.5rem;
   letter-spacing: 1px;
   cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.drag-item:hover {
+  transform: translateY(-2px);
+  background-color: rgba(0, 200, 255, 0.16);
 }
 
 .drag-item:focus {
-  outline: none;
-  background-color: white;
-  color: black;
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+  background-color: rgba(0, 200, 255, 0.16);
+  box-shadow: 
+    0 0 0 4px rgba(0, 200, 255, 0.25),
+    0 0 14px rgba(0, 200, 255, 0.45);
 }
 
 /* Add Button Group */
@@ -153,20 +179,20 @@ ul {
 }
 
 .add-btn {
-  margin: 10px;
-  padding: 5px 10px;
+  margin: 14px 10px 10px;
+  padding: 6px 12px;
   display: flex;
   align-items: center;
   cursor: pointer;
   width: fit-content;
-  border-radius: 5px;
-  transition: all 0.3s ease-in;
+  border-radius: 10px;
+  transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
   user-select: none;
 }
 
 .add-btn:hover {
-  background-color: rgba(255, 255, 255, 0.9);
-  color: black;
+  background-color: rgba(0, 200, 255, 0.18);
+  box-shadow: 0 0 10px rgba(0, 200, 255, 0.25);
 }
 
 .add-btn:active {
@@ -175,12 +201,16 @@ ul {
 
 .solid {
   display: none;
+  margin: 12px;
+  transition: filter 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
 }
 
 .solid:hover {
-  transition: unset;
-  filter: brightness(95%);
+  filter: brightness(108%);
   color: white;
+  box-shadow: 
+    0 0 0 2px rgba(255, 255, 255, 0.18),
+    0 0 12px rgba(255, 255, 255, 0.25);
 }
 
 .plus-sign {

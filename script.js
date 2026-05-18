@@ -129,11 +129,13 @@ function updateItem(id, column) {
 
 // Add to Column List, Reset Text Box
 function addToColumn(column) {
-  const itemText = addItems[column].textContent;
+  const itemText = addItems[column].textContent.trim();
   const selectedArray = listArrays[column];
-  selectedArray.push(itemText);
-  addItems[column].textContent = '';
-  updateDOM();
+  if (itemText !== '') {
+    selectedArray.push(itemText);
+    addItems[column].textContent = '';
+    updateDOM();
+  }
 }
 
 // Show Add Item Input Box

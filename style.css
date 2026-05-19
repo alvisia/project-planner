@@ -40,10 +40,38 @@ h1 {
   text-align: center;
   margin-top: 0.5rem;
   font-size: 1.5rem;
+  font-family: inherit;
   color: white;
   text-shadow: 
     0 2px 4px rgba(0, 0, 0, 0.8),
     0 0 8px rgba(0, 0, 0, 0.45);
+}
+
+.reset-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.reset-board-btn {
+  background-color: rgba(120, 35, 50, 0.85);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.reset-board-btn:hover {
+  background-color: rgba(170, 55, 75, 0.95);
+  box-shadow: 0 0 14px rgba(255, 90, 110, 0.35);
+}
+
+.reset-board-btn:active {
+  transform: scale(0.97);
 }
 
 ul {

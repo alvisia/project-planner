@@ -2,6 +2,7 @@ const addBtns = document.querySelectorAll('.add-btn:not(.solid)');
 const saveItemBtns = document.querySelectorAll('.solid');
 const addItemContainers = document.querySelectorAll('.add-container');
 const addItems = document.querySelectorAll('.add-item');
+const resetBoardBtn = document.getElementById('reset-board-btn');
 // Item Lists
 const listColumns = document.querySelectorAll('.drag-item-list');
 const backlogList = document.getElementById('backlog-list');
@@ -170,6 +171,16 @@ function deleteItem(column, index) {
   updateDOM();
 }
 
+// Reset Board to Default
+function resetBoard() {
+  const confirmReset = confirm('Are you sure you want to reset the board?');
+  if (confirmReset) {
+    localStorage.clear();
+    updatedOnLoad = false;
+    updateDOM();
+  }
+}
+
 // Allows Arrays to reflect drag and drop items
 function rebuildArrays() {
   backlogListArray = Array.from(backlogList.children).map(item => item.textContent);
@@ -230,6 +241,9 @@ function drop(event) {
   dragging = false;
   rebuildArrays();
 }
+
+// Event Listeners
+resetBoardBtn.addEventListener('click', resetBoard);
 
 // On Load
 updateDOM();

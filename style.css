@@ -147,8 +147,9 @@ ul {
 }
 
 .drag-item {
+  position: relative;
   margin: 10px;
-  padding: 10px;
+  padding: 10px 2rem 10px 10px;
   height: fit-content;
   background-color: rgba(0, 0, 0, 0.8);
   border-radius: 10px;
@@ -170,6 +171,19 @@ ul {
   box-shadow: 
     0 0 0 4px rgba(0, 200, 255, 0.25),
     0 0 14px rgba(0, 200, 255, 0.45);
+}
+
+/* Delete Icon */
+.fa-xmark {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: white;
+  cursor: pointer;
+}
+
+.fa-xmark:hover {
+  color: rgba(233, 37, 11, 0.89);
 }
 
 /* Add Button Group */

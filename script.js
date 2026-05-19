@@ -63,13 +63,24 @@ function createItemEl(columnEl, column, item, index) {
   // List Item
   const listEl = document.createElement('li');
   listEl.classList.add('drag-item');
-  listEl.textContent = item;
   listEl.draggable = true; // Makes an element draggable
   listEl.setAttribute('ondragstart', 'drag(event)');
-  listEl.contentEditable = true; // Makes an element editable (like an input field)
   listEl.id = index;
-  listEl.setAttribute('onfocusout', `updateItem(${index}, ${column})`);
+  // List Item Text
+  const listElText = document.createElement('span');
+  listElText.classList.add('item-text');
+  listElText.textContent = item;
+  listElText.contentEditable = true; // Makes an element editable (like an input field)
+  listElText.setAttribute('onfocusout', `updateItem(${index}, ${column})`);
+  // Delete Button
+  const deleteBtn = document.createElement('i');
+  deleteBtn.classList.add('fa-solid', 'fa-xmark');
+
+  deleteBtn.addEventListener('click', () => {
+    deleteItem(column, index);
+  });
   // Append
+  listEl.append(listElText, deleteBtn);
   columnEl.appendChild(listEl);
 }
 
@@ -151,6 +162,12 @@ function hideInputBox(column) {
   saveItemBtns[column].style.display = 'none';
   addItemContainers[column].style.display = 'none';
   addToColumn(column);
+}
+
+// Delete Item
+function deleteItem(column, index) {
+  listArrays[column].splice(index, 1);
+  updateDOM();
 }
 
 // Allows Arrays to reflect drag and drop items

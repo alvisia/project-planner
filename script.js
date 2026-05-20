@@ -9,6 +9,7 @@ const backlogList = document.getElementById('backlog-list');
 const progressList = document.getElementById('progress-list');
 const completeList = document.getElementById('complete-list');
 const onHoldList = document.getElementById('on-hold-list');
+const dragColumns = document.querySelectorAll('.drag-column');
 
 // Items
 let updatedOnLoad = false;
@@ -36,7 +37,7 @@ function getSavedColumns() {
     backlogListArray = ['Build a weather dashboard', 'Create a movie search app'];
     progressListArray = ['Choose project features', 'Sketch basic layout'];
     completeListArray = ['Build responsive UI', 'Add JavaScript functionality'];
-    onHoldListArray = ['Setup up project files', 'Initialize Git repository'];
+    onHoldListArray = ['Set up project files', 'Initialize Git repository'];
   }
 }
 
@@ -128,12 +129,17 @@ function updateDOM() {
 // Update Item - Delete if Necessary, or Update Array Value
 function updateItem(id, column) {
   const selectedArray = listArrays[column];
-  const selectedColumnEl = listColumns[column].children;
+  const selectedColumnItems = listColumns[column].children;
+  const selectedItem = selectedColumnItems[id];
+  const selectedItemText = selectedItem.querySelector('.item-text');
+
   if (!dragging) {
-    if (!selectedColumnEl[id].textContent) {
-      delete selectedArray[id];
+    const trimmedText = selectedItemText.textContent.trim();
+
+    if (!trimmedText) {
+      selectedArray.splice(id, 1);
     } else {
-      selectedArray[id] = selectedColumnEl[id].textContent;
+      selectedArray[id] = trimmedText;
     }
     updateDOM();
   }
@@ -183,10 +189,10 @@ function resetBoard() {
 
 // Allows Arrays to reflect drag and drop items
 function rebuildArrays() {
-  backlogListArray = Array.from(backlogList.children).map(item => item.textContent);
-  progressListArray = Array.from(progressList.children).map(item => item.textContent);
-  completeListArray = Array.from(completeList.children).map(item => item.textContent);
-  onHoldListArray = Array.from(onHoldList.children).map(item => item.textContent);
+  backlogListArray = Array.from(backlogList.children).map(item => item.querySelector('.item-text').textContent.trim());
+  progressListArray = Array.from(progressList.children).map(item => item.querySelector('.item-text').textContent.trim());
+  completeListArray = Array.from(completeList.children).map(item => item.querySelector('.item-text').textContent.trim());
+  onHoldListArray = Array.from(onHoldList.children).map(item => item.querySelector('.item-text').textContent.trim());
   
   // listColumns.forEach((list, index) => {
   //   listArrays[index].splice(0, listArrays[index].length); // empties array without breaking reference to orginal array
@@ -214,6 +220,7 @@ function rebuildArrays() {
 function drag(event) {
   draggedItem = event.target;
   dragging = true;
+  draggedItem.classList.add('is-dragging');
 }
 
 // Column Allows for Item to Drop
@@ -223,7 +230,10 @@ function allowDrop(event) {
 
 // When Item Enters Column Area
 function dragEnter(column) {
-  listColumns[column].classList.add('over');
+  dragColumns.forEach((dragColumn) => {
+    dragColumn.classList.remove('over');
+  });
+  dragColumns[column].classList.add('over');
   currentColumn = column;
 }
 
@@ -231,13 +241,16 @@ function dragEnter(column) {
 function drop(event) {
   event.preventDefault();
   // Remove Background Color/Padding
-  listColumns.forEach((column) => {
-    column.classList.remove('over');
+  dragColumns.forEach((dragColumn) => {
+    dragColumn.classList.remove('over');
   });
   // Add Item to Column
   const parent = listColumns[currentColumn];
   parent.appendChild(draggedItem);
   // Dragging complete
+  if (draggedItem) {
+    draggedItem.classList.remove('is-dragging');
+  }
   dragging = false;
   rebuildArrays();
 }

@@ -6,10 +6,17 @@ html {
 }
 
 :root {
+  /* Solid column colors */
   --column-1: #b7793f;
   --column-2: #247c7c;
   --column-3: #3b82f6;
   --column-4: #248224;
+
+  /* Softer drag-over colors */
+  --column-1-over: rgba(183, 121, 63, 0.25);
+  --column-2-over: rgba(36, 124, 124, 0.25);
+  --column-3-over: rgba(59, 130, 246, 0.25);
+  --column-4-over: rgba(36, 130, 36, 0.25);
 }
 
 body {
@@ -99,6 +106,7 @@ ul {
   border-radius: 10px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
   overflow-x: hidden;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease, outline 0.25s ease;
 }
 
 .header {
@@ -116,29 +124,25 @@ ul {
 
 .backlog-column .header,
 .backlog-column .solid,
-.backlog-column .solid:hover,
-.backlog-column .over {
+.backlog-column .solid:hover {
   background-color: var(--column-1);
 }
 
 .progress-column .header,
 .progress-column .solid,
-.progress-column .solid:hover,
-.progress-column .over {
+.progress-column .solid:hover {
   background-color: var(--column-2);
 }
 
 .complete-column .header,
 .complete-column .solid,
-.complete-column .solid:hover,
-.complete-column .over {
+.complete-column .solid:hover {
   background-color: var(--column-3);
 }
 
 .on-hold-column .header,
 .on-hold-column .solid,
-.on-hold-column .solid:hover,
-.on-hold-column .over {
+.on-hold-column .solid:hover {
   background-color: var(--column-4);
 }
 
@@ -167,7 +171,31 @@ ul {
 
 /* Drag and Drop */
 .over {
-  padding: 50px 10px;
+ outline-offset: 4px;
+}
+
+.backlog-column.over {
+  background-color: var(--column-1-over);
+  outline: 2px solid var(--column-1);
+  box-shadow: 0 0 18px rgba(183, 121, 63, 0.35);
+}
+
+.progress-column.over {
+  background-color: var(--column-2-over);
+  outline: 2px solid var(--column-2);
+  box-shadow: 0 0 18px rgba(36, 124, 124, 0.35);
+}
+
+.complete-column.over {
+  background-color: var(--column-3-over);
+  outline: 2px solid var(--column-3);
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.35);
+}
+
+.on-hold-column.over {
+  background-color: var(--column-4-over);
+  outline: 2px solid var(--column-4);
+  box-shadow: 0 0 18px rgba(36, 130, 36, 0.35);
 }
 
 .drag-item-list {
@@ -183,8 +211,12 @@ ul {
   border-radius: 10px;
   line-height: 1.5rem;
   letter-spacing: 1px;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  cursor: grab;
+  transition: 
+    transform 0.25s ease, 
+    background-color 0.25s ease,
+    opacity 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .drag-item:hover {
@@ -192,13 +224,28 @@ ul {
   background-color: rgba(0, 200, 255, 0.16);
 }
 
-.drag-item:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.9);
-  outline-offset: 3px;
+.item-text {
+  cursor: text;
+}
+
+.item-text:focus {
+  outline: none;
+}
+
+.drag-item:focus-within {
   background-color: rgba(0, 200, 255, 0.16);
   box-shadow: 
     0 0 0 4px rgba(0, 200, 255, 0.25),
     0 0 14px rgba(0, 200, 255, 0.45);
+}
+
+.drag-item.is-dragging {
+  opacity: 0.45;
+  background-color: rgba(0, 200, 255, 0.12);
+  outline: 2px dashed rgba(0, 200, 255, 0.65);
+  outline-offset: -4px;
+  transform: scale(0.98);
+  box-shadow: none;
 }
 
 /* Delete Icon */

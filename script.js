@@ -26,6 +26,11 @@ let draggedItem;
 let dragging = false;
 let currentColumn;
 
+// Sync listArrays with the four real arrays
+function syncListArrays() {
+  listArrays = [backlogListArray, progressListArray, completeListArray, onHoldListArray];
+}
+
 // Get Arrays from localStorage if available, set default values if not
 function getSavedColumns() {
   if (localStorage.getItem('backlogItems')) {
@@ -43,21 +48,11 @@ function getSavedColumns() {
 
 // Set localStorage Arrays
 function updateSavedColumns() {
-  listArrays = [backlogListArray, progressListArray, completeListArray, onHoldListArray];
+  syncListArrays();
   const arrayNames = ['backlog', 'progress', 'complete', 'onHold'];
   listArrays.forEach((list, index) => {
     localStorage.setItem(`${arrayNames[index]}Items`, JSON.stringify(list));
   });
-  // localStorage.setItem('backlogItems', JSON.stringify(backlogListArray));
-  // localStorage.setItem('progressItems', JSON.stringify(progressListArray));
-  // localStorage.setItem('completeItems', JSON.stringify(completeListArray));
-  // localStorage.setItem('onHoldItems', JSON.stringify(onHoldListArray));
-}
-
-// Filter Arrays to remove empty items
-function filterArray(array) {
-  const filteredArray = array.filter(item => item !== null);
-  return filteredArray;
 }
 
 // Create DOM Elements for each list item
@@ -97,33 +92,15 @@ function updateDOM() {
     getSavedColumns();
   }
 
-  // Backlog Column
-  backlogList.textContent = '';
-  backlogListArray.forEach((backlogItem, index) => {
-    createItemEl(backlogList, 0, backlogItem, index);
-  });
-  backlogListArray = filterArray(backlogListArray);
+  syncListArrays();
+  
+  listArrays.forEach((array, column) => {
+    listColumns[column].textContent = '';
 
-  // Progress Column
-  progressList.textContent = '';
-  progressListArray.forEach((progressItem, index) => {
-    createItemEl(progressList, 1, progressItem, index);
+    array.forEach((item, index) => {
+      createItemEl(listColumns[column], column, item, index);
+    });
   });
-  progressListArray = filterArray(progressListArray);
-
-  // Complete Column
-  completeList.textContent = '';
-  completeListArray.forEach((completeItem, index) => {
-    createItemEl(completeList, 2, completeItem, index);
-  });
-  completeListArray = filterArray(completeListArray);
-
-  // On Hold Column
-  onHoldList.textContent = '';
-  onHoldListArray.forEach((onHoldItem, index) => {
-    createItemEl(onHoldList, 3, onHoldItem, index);
-  });
-  onHoldListArray = filterArray(onHoldListArray);
 
   // Run getSavedColumns only once, Update Local Storage
   updatedOnLoad = true;
@@ -191,32 +168,18 @@ function resetBoard() {
   }
 }
 
+function getItemsFromColumn(listElement) {
+  const itemTexts = Array.from(listElement.children).map(item => item.querySelector('.item-text').textContent.trim());
+  return itemTexts;
+}
+
 // Allows Arrays to reflect drag and drop items
 function rebuildArrays() {
-  backlogListArray = Array.from(backlogList.children).map(item => item.querySelector('.item-text').textContent.trim());
-  progressListArray = Array.from(progressList.children).map(item => item.querySelector('.item-text').textContent.trim());
-  completeListArray = Array.from(completeList.children).map(item => item.querySelector('.item-text').textContent.trim());
-  onHoldListArray = Array.from(onHoldList.children).map(item => item.querySelector('.item-text').textContent.trim());
+  syncListArrays();
+  listArrays.forEach((array, index) => {
+    array.splice(0, array.length, ...getItemsFromColumn(listColumns[index])); 
+  });
   
-  // listColumns.forEach((list, index) => {
-  //   listArrays[index].splice(0, listArrays[index].length); // empties array without breaking reference to orginal array
-  //   for (let i = 0; i < list.children.length; i++) {
-  //     listArrays[index].push(list.children[i].textContent);
-  //   }
-  // });
-
-  // // for (let i = 0; i < backlogList.children.length; i++) {
-  // //   backlogListArray.push(backlogList.children[i].textContent);
-  // // }
-  // // for (let i = 0; i < progressList.children.length; i++) {
-  // //   progressListArray.push(progressList.children[i].textContent);
-  // // }
-  // // for (let i = 0; i < completeList.children.length; i++) {
-  // //   completeListArray.push(completeList.children[i].textContent);
-  // // }
-  // // for (let i = 0; i < onHoldList.children.length; i++) {
-  // //   onHoldListArray.push(onHoldList.children[i].textContent);
-  // // }
   updateDOM();
 }
 

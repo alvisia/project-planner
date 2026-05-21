@@ -66,14 +66,18 @@ function createItemEl(columnEl, column, item, index) {
   const listEl = document.createElement('li');
   listEl.classList.add('drag-item');
   listEl.draggable = true; // Makes an element draggable
-  listEl.setAttribute('ondragstart', 'drag(event)');
   listEl.id = index;
+
+  listEl.addEventListener('dragstart', drag);
   // List Item Text
   const listElText = document.createElement('span');
   listElText.classList.add('item-text');
   listElText.textContent = item;
   listElText.contentEditable = true; // Makes an element editable (like an input field)
-  listElText.setAttribute('onfocusout', `updateItem(${index}, ${column})`);
+
+  listElText.addEventListener('focusout', () => {
+    updateItem(column, index);
+  });
   // Delete Button
   const deleteBtn = document.createElement('i');
   deleteBtn.classList.add('fa-solid', 'fa-xmark');
@@ -127,7 +131,7 @@ function updateDOM() {
 }
 
 // Update Item - Delete if Necessary, or Update Array Value
-function updateItem(id, column) {
+function updateItem(column, id) {
   const selectedArray = listArrays[column];
   const selectedColumnItems = listColumns[column].children;
   const selectedItem = selectedColumnItems[id];
@@ -257,6 +261,26 @@ function drop(event) {
 
 // Event Listeners
 resetBoardBtn.addEventListener('click', resetBoard);
+
+dragColumns.forEach((dragColumn, index) => {
+  dragColumn.addEventListener('drop', drop);
+  dragColumn.addEventListener('dragover', allowDrop);
+  dragColumn.addEventListener('dragenter', () => {
+    dragEnter(index);
+  });
+});
+
+addBtns.forEach((addButton, index) => {
+  addButton.addEventListener('click', () => {
+    showInputBox(index);
+  });
+});
+
+saveItemBtns.forEach((saveButton, index) => {
+  saveButton.addEventListener('click', () => {
+    hideInputBox(index);
+  });
+});
 
 // On Load
 updateDOM();

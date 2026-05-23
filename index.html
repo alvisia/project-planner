@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drag and Drop</title>
+    <title>Project Planner</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
     <link rel="stylesheet" href="style.css">
@@ -11,101 +11,118 @@
 <body>
     <h1 class="main-title">Project Planner</h1>
     <p class="subtitle">Organize project ideas, tasks, and progress in one simple board.</p>
+
     <div class="reset-btn-container">
-        <button class="reset-board-btn" id="reset-board-btn">Reset Board</button>
+        <button class="reset-board-btn" id="reset-board-btn" type="button">Reset Board</button>
     </div>
+
     <div class="drag-container">
         <ul class="drag-list">
-            <!-- Backlog Column -->
-            <li class="drag-column backlog-column">
+            <!-- Ideas Column -->
+            <li class="drag-column ideas-column">
                 <span class="header">
                     <h1>Ideas</h1>
                 </span>
-                <!-- Backlog Content -->
-                <div id="backlog-content" class="custom-scroll">
-                    <ul class="drag-item-list" id="backlog-list"></ul>
+
+                <!-- Ideas Content -->
+                <div id="ideas-content" class="custom-scroll">
+                    <ul class="drag-item-list" id="ideas-list"></ul>
                 </div>
+
                 <!-- Add Button Group -->
                 <div class="add-btn-group">
                     <div class="add-btn">
                         <span class="plus-sign">+</span>
                         <span>Add Item</span>
                     </div>
-                    <div class="add-btn solid">
+                    <div class="save-btn">
                         <span>Save Item</span>
                     </div>
                 </div>
+
                 <div class="add-container">
-                    <div class="add-item" contenteditable="true"></div>
+                    <div class="add-item" contenteditable="true" aria-label="New idea task"></div>
                 </div>
             </li>
-            <!-- Progress Column -->
-            <li class="drag-column progress-column">
+
+            <!-- Planning Column -->
+            <li class="drag-column planning-column">
                 <span class="header">
                     <h1>Planning</h1>
                 </span>
-                <!-- Progress Content -->
-                <div id="progress-content" class="custom-scroll">
-                    <ul class="drag-item-list" id="progress-list"></ul>
+
+                <!-- Planning Content -->
+                <div id="planning-content" class="custom-scroll">
+                    <ul class="drag-item-list" id="planning-list"></ul>
                 </div>
+
                 <!-- Add Button Group -->
                 <div class="add-btn-group">
                     <div class="add-btn">
                         <span class="plus-sign">+</span>
                         <span>Add Item</span>
                     </div>
-                    <div class="add-btn solid">
+                    <div class="save-btn">
                         <span>Save Item</span>
                     </div>
                 </div>
+
                 <div class="add-container">
-                    <div class="add-item" contenteditable="true"></div>
+                    <div class="add-item" contenteditable="true" aria-label="New planning task"></div>
                 </div>
             </li>
-            <!-- Complete Column -->
-            <li class="drag-column complete-column">
+
+            <!-- In Progress Column -->
+            <li class="drag-column in-progress-column">
                 <span class="header">
                     <h1>In Progress</h1>
                 </span>
-                <!-- Complete Content -->
-                <div id="complete-content" class="custom-scroll">
-                    <ul class="drag-item-list" id="complete-list"></ul>
+
+                <!-- In Progress Content -->
+                <div id="in-progress-content" class="custom-scroll">
+                    <ul class="drag-item-list" id="in-progress-list"></ul>
                 </div>
+
                 <!-- Add Button Group -->
                 <div class="add-btn-group">
                     <div class="add-btn">
                         <span class="plus-sign">+</span>
                         <span>Add Item</span>
                     </div>
-                    <div class="add-btn solid">
+                    <div class="save-btn">
                         <span>Save Item</span>
                     </div>
                 </div>
+
                 <div class="add-container">
-                    <div class="add-item" contenteditable="true"></div>
+                    <div class="add-item" contenteditable="true" aria-label="New in-progress task"></div>
                 </div>
             </li>
-            <!-- On-Hold Column -->
-            <li class="drag-column on-hold-column">
+
+            <!-- Completed Column -->
+            <li class="drag-column completed-column">
                 <span class="header">
                     <h1>Completed</h1>
                 </span>
-                <!-- On-Hold Content -->
-                <div id="on-hold-content" class="custom-scroll">
-                    <ul class="drag-item-list" id="on-hold-list"></ul>
+
+                <!-- Completed Content -->
+                <div id="completed-content" class="custom-scroll">
+                    <ul class="drag-item-list" id="completed-list"></ul>
                 </div>
+
                 <!-- Add Button Group -->
                 <div class="add-btn-group">
                     <div class="add-btn">
                         <span class="plus-sign">+</span>
                         <span>Add Item</span>
                     </div>
-                    <div class="add-btn solid">
+                    <div class="save-btn">
                         <span>Save Item</span>
                     </div>
                 </div>
+
                 <div class="add-container">
-                    <div class="add-item" contenteditable="true"></div>
+                    <div class="add-item" contenteditable="true" aria-label="New completed task"></div>
                 </div>                  
             </li>
         </ul>

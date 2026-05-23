@@ -1,93 +1,100 @@
-const addBtns = document.querySelectorAll('.add-btn:not(.solid)');
-const saveItemBtns = document.querySelectorAll('.solid');
+// DOM selectors
+const addBtns = document.querySelectorAll('.add-btn');
+const saveItemBtns = document.querySelectorAll('.save-btn');
 const addItemContainers = document.querySelectorAll('.add-container');
 const addItems = document.querySelectorAll('.add-item');
 const resetBoardBtn = document.getElementById('reset-board-btn');
-// Item Lists
+
 const listColumns = document.querySelectorAll('.drag-item-list');
-const backlogList = document.getElementById('backlog-list');
-const progressList = document.getElementById('progress-list');
-const completeList = document.getElementById('complete-list');
-const onHoldList = document.getElementById('on-hold-list');
+const ideasList = document.getElementById('ideas-list');
+const planningList = document.getElementById('planning-list');
+const inProgressList = document.getElementById('in-progress-list');
+const completedList = document.getElementById('completed-list');
 const dragColumns = document.querySelectorAll('.drag-column');
 
-// Items
+// Local storage keys and default board data
+const storageKeys = ['ideasItems', 'planningItems', 'inProgressItems', 'completedItems'];
+
+const defaultLists = [
+  ['Build a weather dashboard', 'Create a movie search app'],
+  ['Choose project features', 'Sketch basic layout'],
+  ['Build responsive UI', 'Add JavaScript functionality'],
+  ['Set up project files', 'Initialize Git repository'],
+];
+
+// Board state
 let updatedOnLoad = false;
 
-// Initialize Arrays
-let backlogListArray = [];
-let progressListArray = [];
-let completeListArray = [];
-let onHoldListArray = [];
+let ideasListArray = [];
+let planningListArray = [];
+let inProgressListArray = [];
+let completedListArray = [];
 let listArrays = [];
 
-// Drag Functionality
+// Drag state
 let draggedItem;
 let dragging = false;
 let currentColumn;
 
-// Sync listArrays with the four real arrays
+// Keep listArrays synced with the four column arrays
 function syncListArrays() {
-  listArrays = [backlogListArray, progressListArray, completeListArray, onHoldListArray];
+  listArrays = [ideasListArray, planningListArray, inProgressListArray, completedListArray];
 }
 
-// Get Arrays from localStorage if available, set default values if not
+// Load saved board data or fall back to default tasks
 function getSavedColumns() {
-  if (localStorage.getItem('backlogItems')) {
-    backlogListArray = JSON.parse(localStorage.backlogItems);
-    progressListArray = JSON.parse(localStorage.progressItems);
-    completeListArray = JSON.parse(localStorage.completeItems);
-    onHoldListArray = JSON.parse(localStorage.onHoldItems);
+  const hasSavedColumns = storageKeys.every(key => localStorage.getItem(key));
+
+  if (hasSavedColumns) {
+    ideasListArray = JSON.parse(localStorage.getItem(storageKeys[0]));
+    planningListArray = JSON.parse(localStorage.getItem(storageKeys[1]));
+    inProgressListArray = JSON.parse(localStorage.getItem(storageKeys[2]));
+    completedListArray = JSON.parse(localStorage.getItem(storageKeys[3]));
   } else {
-    backlogListArray = ['Build a weather dashboard', 'Create a movie search app'];
-    progressListArray = ['Choose project features', 'Sketch basic layout'];
-    completeListArray = ['Build responsive UI', 'Add JavaScript functionality'];
-    onHoldListArray = ['Set up project files', 'Initialize Git repository'];
+    ideasListArray = [...defaultLists[0]];
+    planningListArray = [...defaultLists[1]];
+    inProgressListArray = [...defaultLists[2]];
+    completedListArray = [...defaultLists[3]];
   }
 }
 
-// Set localStorage Arrays
+// Save current board state to localStorage
 function updateSavedColumns() {
   syncListArrays();
-  const arrayNames = ['backlog', 'progress', 'complete', 'onHold'];
+
   listArrays.forEach((list, index) => {
-    localStorage.setItem(`${arrayNames[index]}Items`, JSON.stringify(list));
+    localStorage.setItem(storageKeys[index], JSON.stringify(list));
   });
 }
 
-// Create DOM Elements for each list item
+// Create one task card and attach its event listeners
 function createItemEl(columnEl, column, item, index) {
-  // List Item
   const listEl = document.createElement('li');
   listEl.classList.add('drag-item');
-  listEl.draggable = true; // Makes an element draggable
+  listEl.draggable = true;
   listEl.id = index;
-
   listEl.addEventListener('dragstart', drag);
-  // List Item Text
+  
   const listElText = document.createElement('span');
   listElText.classList.add('item-text');
   listElText.textContent = item;
-  listElText.contentEditable = true; // Makes an element editable (like an input field)
-
+  listElText.contentEditable = true;
   listElText.addEventListener('focusout', () => {
     updateItem(column, index);
   });
-  // Delete Button
+  
   const deleteBtn = document.createElement('i');
   deleteBtn.classList.add('fa-solid', 'fa-xmark');
-
   deleteBtn.addEventListener('click', () => {
     deleteItem(column, index);
   });
-  // Append
+  
   listEl.append(listElText, deleteBtn);
   columnEl.appendChild(listEl);
 }
 
-// Update Columns in DOM - Reset HTML, Filter Array, Update localStorage
+// Render all columns from the current board arrays
 function updateDOM() {
-  // Check localStorage once
   if (!updatedOnLoad) {
     getSavedColumns();
   }
@@ -102,12 +109,11 @@ function updateDOM() {
     });
   });
 
-  // Run getSavedColumns only once, Update Local Storage
   updatedOnLoad = true;
   updateSavedColumns();
 }
 
-// Update Item - Delete if Necessary, or Update Array Value
+// Save edited task text, or remove the task if it is empty
 function updateItem(column, id) {
   const selectedArray = listArrays[column];
   const selectedColumnItems = listColumns[column].children;
@@ -122,29 +128,31 @@ function updateItem(column, id) {
     } else {
       selectedArray[id] = trimmedText;
     }
+
     updateDOM();
   }
 }
 
-// Add to Column List, Reset Text Box
+// Add a new task to the selected column
 function addToColumn(column) {
   const itemText = addItems[column].textContent.trim();
   const selectedArray = listArrays[column];
-  if (itemText !== '') {
+
+  if (itemText) {
     selectedArray.push(itemText);
     addItems[column].textContent = '';
     updateDOM();
   }
 }
 
-// Show Add Item Input Box
+// Show the editable input area for a column
 function showInputBox(column) {
   addBtns[column].style.visibility = 'hidden';
   saveItemBtns[column].style.display = 'flex';
   addItemContainers[column].style.display = 'flex';
 }
 
-// Hide Item Input Box
+// Hide the input area and save the new task
 function hideInputBox(column) {
   addBtns[column].style.visibility = 'visible';
   saveItemBtns[column].style.display = 'none';
@@ -152,15 +160,16 @@ function hideInputBox(column) {
   addToColumn(column);
 }
 
-// Delete Item
+// Remove a task from its column
 function deleteItem(column, index) {
   listArrays[column].splice(index, 1);
   updateDOM();
 }
 
-// Reset Board to Default
+// Reset localStorage and restore default board data
 function resetBoard() {
   const confirmReset = confirm('Are you sure you want to reset the board?');
+
   if (confirmReset) {
     localStorage.clear();
     updatedOnLoad = false;
@@ -168,14 +177,17 @@ function resetBoard() {
   }
 }
 
+// Get the current task text from one DOM column
 function getItemsFromColumn(listElement) {
-  const itemTexts = Array.from(listElement.children).map(item => item.querySelector('.item-text').textContent.trim());
-  return itemTexts;
+  return Array.from(listElement.children).map(item =>
+    item.querySelector('.item-text').textContent.trim()
+  );
 }
 
-// Allows Arrays to reflect drag and drop items
+// Rebuild arrays from the current DOM order after drag-and-drop
 function rebuildArrays() {
   syncListArrays();
+
   listArrays.forEach((array, index) => {
     array.splice(0, array.length, ...getItemsFromColumn(listColumns[index])); 
   });
@@ -183,19 +195,19 @@ function rebuildArrays() {
   updateDOM();
 }
 
-// When Item Starts Dragging
+// Store the item being dragged and apply placeholder styling
 function drag(event) {
   draggedItem = event.target;
   dragging = true;
   draggedItem.classList.add('is-dragging');
 }
 
-// Column Allows for Item to Drop
+// Allow columns to receive dropped items
 function allowDrop(event) {
   event.preventDefault();
 }
 
-// When Item Enters Column Area
+// Highlight the column currently being dragged over
 function dragEnter(column) {
   dragColumns.forEach((dragColumn) => {
     dragColumn.classList.remove('over');
@@ -204,20 +216,21 @@ function dragEnter(column) {
   currentColumn = column;
 }
 
-// Dropping Item in Column
+// Move the dragged item into the selected column
 function drop(event) {
   event.preventDefault();
-  // Remove Background Color/Padding
+  
   dragColumns.forEach((dragColumn) => {
     dragColumn.classList.remove('over');
   });
-  // Add Item to Column
+  
   const parent = listColumns[currentColumn];
   parent.appendChild(draggedItem);
-  // Dragging complete
+  
   if (draggedItem) {
     draggedItem.classList.remove('is-dragging');
   }
+
   dragging = false;
   rebuildArrays();
 }
@@ -245,6 +258,6 @@ saveItemBtns.forEach((saveButton, index) => {
   });
 });
 
-// On Load
+// Initial render
 updateDOM();
 

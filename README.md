@@ -75,7 +75,7 @@ Possible future improvements include:
 - Replace the browser confirm dialog with a custom styled confirmation popup
 - Add categories, priorities, or due dates for tasks
 - Add a dark/light theme toggle
-- Improve mobile drag-and-drop support
+- Improve touch support for drag-and-drop on mobile and tablet devices
 
 ## Setup
 
